@@ -1,0 +1,257 @@
+Identifying Tech Debt Hotspots From Version Control Data
+
+Introduction
+- My name is Chris Zimmerman. I'm a software engineer at eMoney Advisor out in Radnor, where Nick and Anthony work. 
+- I'm here to talk about Identifying tech debt hotspots from version control data
+- What is a tech debt hotspot? I'll talk about that in time.
+
+Slide with books
+- I read these two books written by a gentleman named Adam Tornhill.
+- These books discuss how to use data to make informed decisions about how to address issues in your codebase
+- And part of that is making use of version control data in some really clever ways, so
+- There are some really cool ideas from these books that I want to share
+- If you're interested in further exploring what I talk about tonight, please check out these books
+
+What I hope you get from this talk
+- How to prioritize tech debt in your codebase
+- Some strategies for addressing tech debt
+- How awesome your version control history is
+
+Technical debt
+- A metaphor for communicating with business
+    - Usually the context of: business comes up and asks development "can you get this feature out by this date?"
+        - "Yeah, I can, but the code will be harder to change later down the road. Are you okay with that?"
+- Describes tradeoffs for being able to release earlier vs being able to more easily evolve our systems
+- Helps communicate the necessity to refactor and evolve system architecture
+    - To keep our code amenable to change
+
+Another way to word this is:
+- Tech debt is code that's more expensive to maintain than it should be -> We pay an interest rate on it
+
+Technical debt is not always bad
+- There are situations where it's appropriate to intentionally take on technical debt in order to get product shipped
+    - For many young companies, in order to get a critical customer or market share, it's totally appropriate to do this
+- Sandi Metz quote - basically, the cost of success is having a messy codebase
+
+Not all "bad code" is technical debt
+- Look at sample code
+- There are issues with the code
+    - Duplication
+- But is it tech debt?
+- We don't know because we don't have context
+    - Maybe this code is in a small module that's been left alone for a long time, so it hasn't been problematic
+- Code isn't tech debt unless we actualy pay interest on it
+- Interest is a function of time
+- Need a time dimension to reason about interest rate
+
+Measuring interest rates
+- We want to be able to measure interest rates so that we can make informed decisions about where to start
+addressing tech debt
+- We don't want to aimlessly make changes. We could fix offensive code all day and night but we need to 
+know if that actualy benefits us
+
+- A good mindset toward this is: “We refactor code that impedes us, not all that offends us.”
+    - Tim Ottinger is an engineering coach who has worked with us at eMoney
+
+- How do we measure interest rates?
+    - We can gather two kinds of data about the code in our codebase that will help with that
+
+Change Frequency
+- How often a file is changed in a codebase
+
+- Let's take a look at some graphs
+- Each graph represents a different codebase
+    - The X-axis represents each file in the system
+    - The Y-axis represents the number of times that file has been modified in the codebase's history
+- The files have been sorted in descending order of # of changes    
+- Adam Tornhill says every codebase he's seen has this distribution
+- Does eMoney's codebase have this distribution?
+    - Yes, it does
+
+Focus on the code that matters
+- This graph tells us where to start looking
+- The files on the left side of the graph are where we spend most of our time,
+    so it's important that the code is easy to work with
+
+Change frequency alone is not enough
+- Version.txt and a 3000 line C# class are very different
+    - a one line file that has a number that changes regularly is different
+    from a multi-thousand line C# file
+
+We need to gather another kind of data to help us measure interest rates
+- Code complexity
+
+How can we measure code complexity?
+- There are different ways to measure this
+    - Lines of code, cyclomatic complexity
+
+For our purposes, lines of code is good enough
+- Language-neutral, easy to measure
+
+By getting the change frequency and lines of code for each file in our codebase,
+we can find what Adam Tornhill calls "hotspots"
+
+Hotspots - complicated code you have to work with often
+Or, code with the highest interest rates
+
+If we were to visualize this data, it might look something like this:
+
+Enclosure diagram
+- In this graphic, each blue-ish circle represents a directory, there the red ones
+represent different files in the system. 
+- The darker the red, the more changes there are. The bigger the circle, the bigger the file.
+- This is being visualized with D3.js, a data visualization library. I will demo this later.
+- This information helps us know where to start looking, but how do we obtain this information?
+
+Version control history
+
+We normally think of it as an insurance policy
+- We're able to jump back to an earlier point in time if we find an issue with the code
+- The repo acts as a source of truth for the code
+
+But it's also a data mine
+
+It can help answer a number of questions
+
+Who modified a file?
+- Using this information, we can generate ownership & expertise maps 
+- We can see who has modified a given file more frequently than others
+- This can help start conversations about code ownership
+
+How long ago was a file last modified?
+- This can tell us the age of a file or if it has stability issues
+- If a code is old, it's probably very stable
+- When it comes to code age, Dan North has introduced the idea of software half-life
+    - We want our code to be very new or very old
+    - If code is very new, it's fresh in our memory
+    - If it's old, it's stable, we can treat it like a black box, and don't have to think about it
+    - If it's in the middle, we have to relearn the code because it's not fresh
+
+How frequently is a file modified?
+- This can also point to code stability issues, as well as code responsibility issues
+- A frequent cause is low cohesion, which I will get into soon
+
+Here is an example of some version control logs. We see the time dimension
+we need to measure interest rates, as well as social and code information
+
+Tools
+
+Codescene.io
+- Codescene.io is a cloud-based visualization tool
+- You can point to a github repo that you have online, or if your repo is private, there is an on prem version that costs money
+- If you're curious about all of its features and want to use them on a public repo, try this out
+- They have several showcases for publicly available repos
+
+Let's look at a showcase example
+- ElasticSearch
+- Hotspots analysis
+    - elasticsearch -> index -> InternalEngine.java
+    - Trends
+    - Tech Debt - Refactoring targets -> X-Ray
+
+code-forensics
+- An open source repo
+- Not as slick as codescene, but I've had success using this tool
+
+code-forensics demo
+- gulp list-analysis tasks
+- gulp hotspot-analysis --dateFrom=2017-01-01
+- gulp webserver
+- https://github.com/NickeManarin/ScreenToGif
+
+We've found *where* the tech debt is, but not *what* it is
+- This is an exercise in judgement
+- This is where you have to look in the file and see what's up
+
+Strategies for Addressing Tech Debt
+
+There are many books on this topic
+
+Add pinning/characterization tests as a safety net
+- You want to ensure that you're maintaining the current behavior
+- This part can be difficult and tedious
+- It's okay for these to be temporary; these can go away once the code is in a better 
+state and you're able to write better tests for the code
+- Working Effectively With Legacy Code goes into this in depth
+
+SOLID Principles -> SRP
+- Wikipedia definition
+- Another way of thinking about it - a class should only have one reason to change
+
+A way in which SRP is violated is:
+
+Low cohesion
+- Cohesion - the degree to which the elements inside a module belong together
+- The more the methods work toward a unifying purpose -> high cohesion
+- The more the methods are unrelated -> low cohesion
+- Can manifest as:
+    - Large classes/modules
+    - Long methods
+    - Numerous methods in one class doing numerous things
+
+Make small functions
+- Problems can usually be broken down into smaller pieces
+- Example code - printOwing()
+
+Make small classes that do one thing
+
+Meme slide 
+- This is *another* exercise in breaking down problems into smaller pieces
+- This will make it much easier to write unit tests
+- With modern IDEs, it's easy to to jump between functions and classes
+    - In a lot of modern languages, there is not a performance overhead to making function calls 
+
+Use triggers to prompt thinking about breaking code down into smaller pieces
+- In this context, a trigger is a line in the sand you draw when your code
+goes over a particular threshold
+- When that line is crossed, you should think about whether or not you want to 
+break your code down
+
+Examples
+- 100 line class
+- 4 dependencies
+- 10 line method
+
+These are not dogmatic rules to follow
+
+Duplicated Code
+- Duplicated code isn't always bad
+
+Duplication is better than the wrong abstraction
+- DRY - Don't Repeat Yourself
+- Removing duplication for the sake of removing duplication can have an adverse effect
+    - The duplication could very well be coincidental
+
+Martin Fowler's "Rule of 3"
+- 1st time you write code, you just do it
+- 2nd time you write code, you wince at the duplication, but do it anyway
+- 3rd time you write the code, you find the abstraction and remove the duplication
+
+Automated refactorings
+- Most modern IDEs support simple automated refactorings
+    - VS Code, IntelliJ, WebStorm, Rider, Visual Studio
+
+- Rely on automated refactorings because they're less error prone than doing them manually
+
+- Extract function/method
+- Extract class
+- Rename - giving your variables better names makes your code more understandable
+
+Further Reading
+
+As mentioned earlier, Your Code As A Crime Scene and Software Design X-Rays are generate
+For different techniques to address tech debt, check out
+- Working Effectively With Legacy Code by Michael Feathers - how to find code seams and face different legacy code issues
+- Refactoring by Martin Fowler - has different code smells and refactorings that will address them
+- Practical OO Design In Ruby by Sandi Metz - In Ruby, but contains advice applicable across other languages
+
+Any questions/comments?
+
+Thank you
+
+Links
+https://www.youtube.com/watch?v=4Y0tOi7QWqM
+https://codescene.io/
+https://codescene.io/projects/177/jobs/11548/results 
+https://github.com/smontanari/code-forensics
+https://www.youtube.com/watch?v=KA9i5IGS-oU
