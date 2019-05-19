@@ -121,7 +121,8 @@ Who modified a file?
 How long ago was a file last modified?
 - This can tell us the age of a file or if it has stability issues
 - If a code is old, it's probably very stable
-- When it comes to code age, Dan North has introduced the idea of software half-life
+- Ebbinbhaus forgetting curve
+    - Information is lost when there's no effort to retain it
     - We want our code to be very new or very old
     - If code is very new, it's fresh in our memory
     - If it's old, it's stable, we can treat it like a black box, and don't have to think about it
@@ -214,18 +215,9 @@ Examples
 
 These are not dogmatic rules to follow
 
-Duplicated Code
-- Duplicated code isn't always bad
+Nested dependencies
 
-Duplication is better than the wrong abstraction
-- DRY - Don't Repeat Yourself
-- Removing duplication for the sake of removing duplication can have an adverse effect
-    - The duplication could very well be coincidental
-
-Martin Fowler's "Rule of 3"
-- 1st time you write code, you just do it
-- 2nd time you write code, you wince at the duplication, but do it anyway
-- 3rd time you write the code, you find the abstraction and remove the duplication
+Dependency Injection
 
 Automated refactorings
 - Most modern IDEs support simple automated refactorings
@@ -236,6 +228,16 @@ Automated refactorings
 - Extract function/method
 - Extract class
 - Rename - giving your variables better names makes your code more understandable
+
+One last thing
+- I'm going to say something that invalidates what I've talked to you about tonight
+
+The highest priority tech debt is the code you’re currently working in
+- Like I said, there are times where it's appropriate to take on tech debt, and it's usually
+in the context of early businesses surviving
+- If you're not in this situation, you can take the time to apply the boy scout rule and clean
+up the area you're in for others who will come in after you
+
 
 Further Reading
 
