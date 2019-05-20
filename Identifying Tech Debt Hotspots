@@ -1,4 +1,14 @@
+Talk Title:
+
 Identifying Tech Debt Hotspots From Version Control Data
+
+Synopsis: 
+
+Every codebase has its issues. Large files, duplication, and hard to understand code are in every codebase.
+You can fix those issues, but are you addressing the ones that impact your development efforts the most?
+
+In this talk, I'll discuss how to take a data-based approach to identifying your highest priority tech debt and some strategies for addressing it.
+I'll also discuss some different types of information that your version control history can tell you about your codebase that you may not have known about.
 
 Introduction
 - My name is Chris Zimmerman. I'm a software engineer at eMoney Advisor out in Radnor, where Nick and Anthony work. 
