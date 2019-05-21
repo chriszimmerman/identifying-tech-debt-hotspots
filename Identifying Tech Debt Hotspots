@@ -225,10 +225,6 @@ Examples
 
 These are not dogmatic rules to follow
 
-Nested dependencies
-
-Dependency Injection
-
 Automated refactorings
 - Most modern IDEs support simple automated refactorings
     - VS Code, IntelliJ, WebStorm, Rider, Visual Studio
